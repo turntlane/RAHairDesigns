@@ -1,10 +1,12 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cuts from "./Cuts/Cuts";
 import Hair from "./Hair/Hair";
 import Extensions from "./Extensions/Extensions";
 import Waxing from "./Waxing/Waxing";
 import DateTimePicker from "react-datetime-picker";
+import { cuts } from "../Utils/Appt-info/appt-info";
+
 
 function Appointments() {
   const [appt_time, setNewTime] = useState(new Date());
@@ -12,32 +14,41 @@ function Appointments() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [service, setService] = useState("");
-  const [checked, setChecked] = useState(false)
+  const [service, setService] = useState([]);
+  const [checked, setChecked] = useState({});
+  const [cutOpen, setCutOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let FormData = { first_name, last_name, email, appt_time, service };
+    console.log(checked)
+    let FormData = { first_name, last_name, email, appt_time, checked };
     await axios.post("http://localhost:5500/appointmentform", FormData);
     setFirstName("");
     setLastName("");
     setEmail("");
     setNewTime("");
-    setService("");
+    setChecked({});
   };
 
-  const handleOnChange = useCallback(
-      e => {
-          const index = e.target.name
-          let items = [...checked]
-          items[index].isChecked = e.target.checked
-          setChecked(items)
-      }, [checked]
-  )
+
+  const handleChange = (e) => {
+    if (e.target.type === 'checkbox' && !e.target.checked) {
+      setChecked({...checked, [e.target.value]: null});
+  } else {
+      setChecked({...checked, [e.target.name]: e.target.value });
+  }
+}
+
+  // const handleChange = (e) => {
+  //   if (checked.includes(e.target.value)) {
+  //     setChecked(checked.filter(check => check.value !== e.target.value))
+  //   }else {
+  //     setChecked([...checked, e.target.name])
+  //   }
+  // }
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={first_name}
@@ -59,11 +70,23 @@ function Appointments() {
           className="contact-email contact-input"
           placeholder="Email"
         ></input>
-        <button type="submit" className="contact-submit learn-more">
-          Submit
-        </button>
-      <h1>SELECT A SERVICE</h1>
-        <Cuts value={service} onChange={(e) => setService(e.target.value)} />
+        <h1>SELECT A SERVICE</h1>
+        {/* <h1>Cuts</h1> */}
+        <button onClick={() => setCutOpen(true)}>Cuts</button>
+        {cutOpen
+          ? cuts.map((cut, i) => (
+              <label key={i}>
+                {cut.name}
+                <Cuts
+                  type="checkbox"
+                  value={cut.name}
+                  checked={checked}
+                  onChange={handleChange}
+                ></Cuts>
+              </label>
+            ))
+          : null}
+
         <Hair />
         <Extensions />
         <Waxing />
@@ -82,8 +105,7 @@ function Appointments() {
             seconds: { min: 0, max: 59 },
           }}
         />
-        <button type="submit">Submit</button>
-      </form>
+        <button type="submit" onClick={handleSubmit}>Submit</button>
     </div>
   );
 }

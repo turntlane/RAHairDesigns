@@ -6,7 +6,7 @@ function Waxing() {
     <div>
       <button onClick={() => setWaxingOpen(true)}>Waxing</button>
       {waxingOpen ? (
-        <div class="checkbox">
+        <div className="checkbox">
           <input type="checkbox" id="lips" name="" value="" />
           <label for="lips">
             <span>Lips: $10+</span>

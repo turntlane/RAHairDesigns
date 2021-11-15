@@ -5,7 +5,7 @@ function Hair() {
     return (
         <div>
               <button onClick={() => setHairOpen(true)} >Hair</button>
-            {hairOpen ?   <div class="checkbox">
+            {hairOpen ?   <div className="checkbox">
      <input type="checkbox" id="color" name="" value="" />
      <label for="color"><span>Color: $75+</span></label>
      <input type="checkbox" id="higlights" name="" value="" />
