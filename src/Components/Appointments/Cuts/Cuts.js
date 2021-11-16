@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-function Cuts({ type = "checkbox", name, value, onChange }) {
+function Cuts({onClick, value }) {
 
   return (
     <div>
         <div className="checkbox">
-          <input type={type} name={name} value={value} onChange={onChange} />
+          <button value={value} onClick={onClick}>Add</button>
         </div>
     </div>
   );

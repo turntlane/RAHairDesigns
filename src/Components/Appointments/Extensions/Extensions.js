@@ -6,8 +6,7 @@ function Extensions() {
         <div>
                           <button onClick={() => setExtensionsOpen(true)} >Extensions</button>
             {extensionsOpen ?   <div className="checkbox">
-     <input type="checkbox" id="extensions" name="" value="" />
-     <label for="extensions"><span>Extensions</span></label>
+                Call for pricing
   </div> : null}
         </div>
     )

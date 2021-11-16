@@ -14,19 +14,37 @@ const cuts = [
 ]
 
 const hair = [
-    "Color: $75+",
-    "Highlights: $100+",
-    "Blow Dry: $30"
+    {
+        name: "Color",
+        price: 75
+    },
+    {
+        name: "Highlights",
+        price: 100
+    },
+    {
+        name: "Blow Dry",
+        price: 30
+    }
 ]
 
 const extensions = [
-    "Extensions"
+    {name: "Extensions"}
 ]
 
 const waxing = [
-    "Lip: $10",
-    "Chin: $10",
-    "Eyebrow: $10"
+    {
+        name: "Lip",
+        price: 10
+    },
+    {
+        name: "Chin",
+        price: 10
+    },
+    {
+        name: "Eyebrow",
+        price: 10
+    }
 ]
 
 export {
