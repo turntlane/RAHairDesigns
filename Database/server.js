@@ -8,8 +8,8 @@ app.use(express.json())
 
 app.post('/appointmentform', async (req, res) => {
     try {
-        const {first_name, last_name, email, appt_time, service} = req.body
-        const newApt = await pool.query("INSERT INTO appointments (first_name, last_name, email, appt_time, service) VALUES($1, $2, $3, $4, $5) RETURNING *", [first_name, last_name, email, appt_time, service])
+        const {first_name, last_name, email, appt_date, appt_time, service} = req.body
+        let newApt = await pool.query("INSERT INTO appointments (first_name, last_name, email, appt_date, appt_time, service) VALUES($1, $2, $3, $4, $5, $6) RETURNING *", [first_name, last_name, email, appt_date, appt_time, service])
         res.json(newApt.rows[0])
     }
     catch (err) {

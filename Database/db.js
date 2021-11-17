@@ -12,4 +12,6 @@ const pool = new Pool({
     database: 'RAHairDesigns'
 })
 
+pool.query("DELETE FROM appointments a USING (SELECT MIN(ctid) as ctid, appt_date, appt_time FROM appointments GROUP BY appt_date, appt_time HAVING COUNT(*) > 1 ) b WHERE a.appt_date = b.appt_date AND a.ctid <> b.ctid)")
+
 module.exports = pool

@@ -4,12 +4,13 @@ import Cuts from "./Cuts/Cuts";
 import Hair from "./Hair/Hair";
 import Extensions from "./Extensions/Extensions";
 import Waxing from "./Waxing/Waxing";
-import DateTimePicker from "react-datetime-picker";
-import { cuts, hair, extensions, waxing } from "../Utils/Appt-info/appt-info";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { cuts, hair, waxing, times } from "../Utils/Appt-info/appt-info";
 
 function Appointments() {
-  const [appt_time, setNewTime] = useState(new Date());
-  const [startDate] = useState(new Date());
+  const [appt_date, setNewDate] = useState(null);
+  const [appt_time, setNewTime] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,17 +18,40 @@ function Appointments() {
   const [cutOpen, setCutOpen] = useState(false);
   const [hairOpen, setHairOpen] = useState(false);
   const [waxingOpen, setWaxingOpen] = useState(false);
+  const [dateChange, setDateChange] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [useDates, setUsedDates] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(service);
-    let FormData = { first_name, last_name, email, appt_time, service };
+    let FormData = {
+      first_name,
+      last_name,
+      email,
+      appt_date,
+      appt_time,
+      service,
+    };
     await axios.post("http://localhost:5500/appointmentform", FormData);
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setNewTime("");
-    setService([]);
+    setFormSubmitted(true)
+
+    // setFirstName("");
+    // setLastName("");
+    // setEmail("");
+    // setNewTime("");
+    // setNewDate("");
+    // setService([]);
+  };
+
+  const handleDateChange = (date) => {
+    setNewDate(date);
+    setDateChange(true);
+  };
+
+  const handleTimeChange = (e) => {
+    setNewTime(e.target.value);
+    setDateChange(false);
   };
 
   const addService = (e) => {
@@ -39,6 +63,11 @@ function Appointments() {
   const deleteService = (index) => {
     setService(service.filter((i) => i !== index));
     console.log(service);
+  };
+
+  const isWeekday = (date) => {
+    const day = date.getDay();
+    return day !== 0 && day !== 1 && day !== 2;
   };
 
   return (
@@ -97,24 +126,27 @@ function Appointments() {
           ))
         : null}
       <Extensions />
-      <DateTimePicker
-        onChange={(e) => setNewTime(e)}
-        value={appt_time}
-        disableClock={true}
-        autoFocus={true}
-        isCalendarOpen={true}
-        minDate={startDate}
-        input={false}
-        timeFormat="HH:mm:ss"
-        timeConstraints={{
-          hours: { min: 0, max: 23 },
-          minutes: { min: 0, max: 59 },
-          seconds: { min: 0, max: 59 },
-        }}
-      />
+      <DatePicker placeholderText="Choose a date" selected={appt_date} filterDate={isWeekday} minDate={new Date()} maxDate={new Date(new Date().setDate(new Date().getDate()+30))} onChange={handleDateChange} />
+      {dateChange
+        ? times.map((time, i) => (
+            <button key={i} value={time.time} onClick={handleTimeChange}>
+              {time.time}
+            </button>
+          ))
+        : null}
       <button type="submit" onClick={handleSubmit}>
         Submit
       </button>
+      {formSubmitted ? (
+        <div>
+          <h1>Appointment Details</h1>
+          <h1>{first_name}</h1>
+          <h1>{last_name}</h1>
+          <h1>{email}</h1>
+          <h1>{service}</h1>
+          {appt_date.toDateString()} at {appt_time.toString()}
+        </div>
+      ) : null}
     </div>
   );
 }
